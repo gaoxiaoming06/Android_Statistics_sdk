@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 27
+        versionCode 8
+        versionName "1.0.1"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    //自定义输出aar路径及文件名
+    libraryVariants.all { variant ->
+        variant.outputs.all {output ->
+            outputFileName = "tiger-statistics-v" + defaultConfig.versionCode + ".aar"
+        }
+//        variant.outputs.each { output ->
+//            output.outputFile = new File(
+//                    // Win
+//                    output.outputFile.parent + "/../../../../aar",
+//                    // Mac
+////                    "aar",
+//                    output.outputFile.name.replace(output.outputFile.name, "tiger-statistics-v" + defaultConfig.versionCode + ".aar"))
+//        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:25.3.1'
+}
+
+//打源码包
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://mv-dev.wonenglc.com/nexus/content/repositories/and_library/"){
+                authentication(userName: "$username", password: "$password")
+            }
+            pom.version = android.defaultConfig.versionCode
+            pom.groupId = 'com.twotiger.library'
+            pom.artifactId = 'statistics'
+        }
+    }
+}
