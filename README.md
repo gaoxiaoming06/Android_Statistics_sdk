@@ -1,5 +1,5 @@
 # sdk
-地址：https://tk.twotiger.cn/tj.gif?token=sss&data=content  
+地址：需上传的服务器地址
 content要求：base64(data);
 # appSdk
 #### 参数约定
